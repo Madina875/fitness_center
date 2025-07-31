@@ -1,0 +1,4 @@
+ssh-keygen -t rsa -b 4096 -C "evaevasmq@gmail.com"
+cat ~/.ssh/id_rsa.pub      | ochiq kalitni korish uchun
+nano  ~/.ssh/authorized_keys
+cat ~/.ssh/id_rsa
