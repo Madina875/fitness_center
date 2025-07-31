@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGoalDto } from './dto/create-goal.dto';
 import { UpdateGoalDto } from './dto/update-goal.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class GoalService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createGoalDto: CreateGoalDto) {
-    return 'This action adds a new goal';
+    return this.prismaService.goal.create({
+      data: createGoalDto,
+    });
   }
 
   findAll() {
-    return `This action returns all goal`;
+    return this.prismaService.goal.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} goal`;
+    return this.prismaService.goal.findUnique({ where: { id } });
   }
 
-  update(id: number, updateGoalDto: UpdateGoalDto) {
-    return `This action updates a #${id} goal`;
+  async update(id: number, updateGoalDto: UpdateGoalDto) {
+    const existing = await this.prismaService.goal.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Goal with ID ${id} not found`);
+    }
+
+    return this.prismaService.goal.update({
+      where: { id },
+      data: updateGoalDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} goal`;
+  async remove(id: number) {
+    const existing = await this.prismaService.goal.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Goal with ID ${id} not found`);
+    }
+
+    return this.prismaService.goal.delete({
+      where: { id },
+    });
   }
 }

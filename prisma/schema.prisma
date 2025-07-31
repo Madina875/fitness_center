@@ -48,14 +48,17 @@ model Role {
   @@map("role")
 }
 
+//many to many
 model UserRole {
+  id   Int    @id  @default(autoincrement())
+
   roleId Int
   userId Int
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
 
-  @@id([roleId, userId])
+  @@unique([roleId, userId])
   @@map("user_role")
 }
 
@@ -87,7 +90,10 @@ model FitnessCenter {
   @@map("fitness_center")
 }
 
+//many to many
 model UserCenter {
+  id   Int    @id @default(autoincrement())
+
   userId     Int
   centerId   Int
   isAccepted Boolean
@@ -95,7 +101,7 @@ model UserCenter {
   user   User          @relation(fields: [userId], references: [id])
   center FitnessCenter @relation(fields: [centerId], references: [id])
 
-  @@id([userId, centerId])
+  @@unique([userId, centerId])
   @@map("user_center")
 }
 

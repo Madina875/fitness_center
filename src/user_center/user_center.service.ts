@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserCenterDto } from './dto/create-user_center.dto';
 import { UpdateUserCenterDto } from './dto/update-user_center.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserCenterService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createUserCenterDto: CreateUserCenterDto) {
-    return 'This action adds a new userCenter';
+    return this.prismaService.userCenter.create({
+      data: createUserCenterDto,
+    });
   }
 
   findAll() {
-    return `This action returns all userCenter`;
+    return this.prismaService.userCenter.findMany({
+      include: { user: true, center: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userCenter`;
+  async findOne(id: number) {
+    const user_center = await this.prismaService.userCenter.findUnique({
+      where: { id },
+      include: { user: true, center: true },
+    });
+
+    if (!user_center) {
+      throw new NotFoundException(`Car history with ID ${id} not found`);
+    }
+
+    return user_center;
   }
 
-  update(id: number, updateUserCenterDto: UpdateUserCenterDto) {
-    return `This action updates a #${id} userCenter`;
+  async update(id: number, updateUserCenterDto: UpdateUserCenterDto) {
+    const existing = await this.prismaService.userCenter.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`user center with ID ${id} not found`);
+    }
+
+    return this.prismaService.userCenter.update({
+      where: { id },
+      data: updateUserCenterDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userCenter`;
+  async remove(id: number) {
+    const existing = await this.prismaService.userCenter.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`user center with ID ${id} not found`);
+    }
+
+    return this.prismaService.userCenter.delete({
+      where: { id },
+    });
   }
 }

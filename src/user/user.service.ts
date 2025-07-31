@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const { full_name, email, phone, password, confirm_password } =
+      createUserDto;
+    if (password !== confirm_password) {
+      throw new BadRequestException('parollar mos emas');
+    }
+    const hashedPassword = await bcrypt.hash(password!, 7);
+
+    return this.prismaService.user.create({
+      data: {
+        full_name,
+        email,
+        phone,
+        hashedPassword,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.prismaService.user.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.prismaService.user.findUnique({
+      where: { id },
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.prismaService.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    await this.prismaService.user.delete({ where: { id } });
+    return 'deleted successfully !!!!';
   }
 }

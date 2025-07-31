@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {
-  create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(createAdminDto: CreateAdminDto) {
+    const { full_name, email, phone, password, confirm_password } =
+      createAdminDto;
+    if (password !== confirm_password) {
+      throw new BadRequestException('parollar mos emas');
+    }
+    const hashedPassword = await bcrypt.hash(password!, 7);
+
+    return this.prismaService.user.create({
+      data: {
+        full_name,
+        email,
+        phone,
+        hashedPassword,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all admin`;
+    return this.prismaService.admin.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} admin`;
+    return this.prismaService.admin.findUnique({ where: { id } });
   }
 
   update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+    return this.prismaService.admin.update({
+      where: { id },
+      data: updateAdminDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async remove(id: number) {
+    await this.prismaService.admin.delete({ where: { id } });
+    return 'removed successfully';
   }
 }

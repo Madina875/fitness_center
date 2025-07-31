@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGoalProgressLogDto } from './dto/create-goal_progress_log.dto';
 import { UpdateGoalProgressLogDto } from './dto/update-goal_progress_log.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class GoalProgressLogService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createGoalProgressLogDto: CreateGoalProgressLogDto) {
-    return 'This action adds a new goalProgressLog';
+    return this.prismaService.goalProgressLog.create({
+      data: createGoalProgressLogDto,
+    });
   }
 
   findAll() {
-    return `This action returns all goalProgressLog`;
+    return this.prismaService.goalProgressLog.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} goalProgressLog`;
+    return this.prismaService.goalProgressLog.findUnique({ where: { id } });
   }
 
-  update(id: number, updateGoalProgressLogDto: UpdateGoalProgressLogDto) {
-    return `This action updates a #${id} goalProgressLog`;
+  async update(id: number, updateGoalProgressLogDto: UpdateGoalProgressLogDto) {
+    const existing = await this.prismaService.goalProgressLog.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Progress with ID ${id} not found`);
+    }
+
+    return this.prismaService.goalProgressLog.update({
+      where: { id },
+      data: updateGoalProgressLogDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} goalProgressLog`;
+  async remove(id: number) {
+    const existing = await this.prismaService.goalProgressLog.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Progress with ID ${id} not found`);
+    }
+
+    return this.prismaService.goalProgressLog.delete({
+      where: { id },
+    });
   }
 }

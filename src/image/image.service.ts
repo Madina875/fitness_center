@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ImageService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
+    return this.prismaService.image.create({
+      data: createImageDto,
+    });
   }
 
   findAll() {
-    return `This action returns all image`;
+    return this.prismaService.image.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} image`;
+    return this.prismaService.image.findUnique({ where: { id } });
   }
 
-  update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
+  async update(id: number, updateImageDto: UpdateImageDto) {
+    const existing = await this.prismaService.image.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Image with ID ${id} not found`);
+    }
+
+    return this.prismaService.image.update({
+      where: { id },
+      data: updateImageDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} image`;
+  async remove(id: number) {
+    const existing = await this.prismaService.image.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Image with ID ${id} not found`);
+    }
+
+    return this.prismaService.image.delete({
+      where: { id },
+    });
   }
 }

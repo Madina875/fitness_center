@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClassScheduleDto } from './dto/create-class_schedule.dto';
 import { UpdateClassScheduleDto } from './dto/update-class_schedule.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ClassScheduleService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createClassScheduleDto: CreateClassScheduleDto) {
-    return 'This action adds a new classSchedule';
+    return this.prismaService.classSchedule.create({
+      data: createClassScheduleDto,
+    });
   }
 
   findAll() {
-    return `This action returns all classSchedule`;
+    return this.prismaService.classSchedule.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} classSchedule`;
+    return this.prismaService.classSchedule.findUnique({ where: { id } });
   }
 
-  update(id: number, updateClassScheduleDto: UpdateClassScheduleDto) {
-    return `This action updates a #${id} classSchedule`;
+  async update(id: number, updateClassScheduleDto: UpdateClassScheduleDto) {
+    const existing = await this.prismaService.classSchedule.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Scheduled with ID ${id} not found`);
+    }
+
+    return this.prismaService.classSchedule.update({
+      where: { id },
+      data: updateClassScheduleDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} classSchedule`;
+  async remove(id: number) {
+    const existing = await this.prismaService.classSchedule.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Class scheduled with ID ${id} not found`);
+    }
+
+    return this.prismaService.classSchedule.delete({
+      where: { id },
+    });
   }
 }

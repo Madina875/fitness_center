@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFitnessCenterDto } from './dto/create-fitness_center.dto';
 import { UpdateFitnessCenterDto } from './dto/update-fitness_center.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FitnessCenterService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createFitnessCenterDto: CreateFitnessCenterDto) {
-    return 'This action adds a new fitnessCenter';
+    return this.prismaService.fitnessCenter.create({
+      data: createFitnessCenterDto,
+    });
   }
 
   findAll() {
-    return `This action returns all fitnessCenter`;
+    return this.prismaService.fitnessCenter.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} fitnessCenter`;
+    return this.prismaService.fitnessCenter.findUnique({ where: { id } });
   }
 
-  update(id: number, updateFitnessCenterDto: UpdateFitnessCenterDto) {
-    return `This action updates a #${id} fitnessCenter`;
+  async update(id: number, updateFitnessCenterDto: UpdateFitnessCenterDto) {
+    const existing = await this.prismaService.fitnessCenter.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Center with ID ${id} not found`);
+    }
+
+    return this.prismaService.fitnessCenter.update({
+      where: { id },
+      data: updateFitnessCenterDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} fitnessCenter`;
+  async remove(id: number) {
+    const existing = await this.prismaService.fitnessCenter.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Fitness Center with ID ${id} not found`);
+    }
+
+    return this.prismaService.fitnessCenter.delete({
+      where: { id },
+    });
   }
 }

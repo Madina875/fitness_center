@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAchievementDto } from './dto/create-achievement.dto';
 import { UpdateAchievementDto } from './dto/update-achievement.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AchievementService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   create(createAchievementDto: CreateAchievementDto) {
-    return 'This action adds a new achievement';
+    return this.prismaService.achievement.create({
+      data: createAchievementDto,
+    });
   }
 
   findAll() {
-    return `This action returns all achievement`;
+    return this.prismaService.achievement.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} achievement`;
+    return this.prismaService.achievement.findUnique({ where: { id } });
   }
 
-  update(id: number, updateAchievementDto: UpdateAchievementDto) {
-    return `This action updates a #${id} achievement`;
+  async update(id: number, updateAchievementDto: UpdateAchievementDto) {
+    const existing = await this.prismaService.achievement.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Car history with ID ${id} not found`);
+    }
+
+    return this.prismaService.achievement.update({
+      where: { id },
+      data: updateAchievementDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} achievement`;
+  async remove(id: number) {
+    await this.prismaService.achievement.delete({ where: { id } });
+    return 'removed successfully!!!';
   }
 }

@@ -9,7 +9,7 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  phone?: string;
+  phone: string;
 
   @ApiProperty()
   @IsEmail()
@@ -18,6 +18,10 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString()
   password: string;
+
+  @ApiProperty()
+  @IsString()
+  confirm_password: string;
 
   @ApiProperty({ default: false })
   @IsBoolean()

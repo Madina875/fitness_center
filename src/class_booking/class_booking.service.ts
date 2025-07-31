@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClassBookingDto } from './dto/create-class_booking.dto';
 import { UpdateClassBookingDto } from './dto/update-class_booking.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ClassBookingService {
+  constructor(private readonly prismaService: PrismaService) {}
   create(createClassBookingDto: CreateClassBookingDto) {
-    return 'This action adds a new classBooking';
+    return this.prismaService.classBooking.create({
+      data: createClassBookingDto,
+    });
   }
 
   findAll() {
-    return `This action returns all classBooking`;
+    return this.prismaService.classBooking.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} classBooking`;
+    return this.prismaService.classBooking.findUnique({ where: { id } });
   }
 
-  update(id: number, updateClassBookingDto: UpdateClassBookingDto) {
-    return `This action updates a #${id} classBooking`;
+  async update(id: number, updateClassBookingDto: UpdateClassBookingDto) {
+    const existing = await this.prismaService.classBooking.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Class booked with ID ${id} not found`);
+    }
+
+    return this.prismaService.classBooking.update({
+      where: { id },
+      data: updateClassBookingDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} classBooking`;
+  async remove(id: number) {
+    const existing = await this.prismaService.classBooking.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Booking with ID ${id} not found`);
+    }
+
+    return this.prismaService.classBooking.delete({
+      where: { id },
+    });
   }
 }
