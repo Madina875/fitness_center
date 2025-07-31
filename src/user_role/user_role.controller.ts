@@ -1,0 +1,76 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { UserRoleService } from './user_role.service';
+import { CreateUserRoleDto } from './dto/create-user_role.dto';
+import { UpdateUserRoleDto } from './dto/update-user_role.dto';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiParam,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
+
+@ApiTags('🎭 User Roles')
+@Controller('user-role')
+export class UserRoleController {
+  constructor(private readonly userRoleService: UserRoleService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new user role relation' })
+  @ApiBody({ type: CreateUserRoleDto })
+  @ApiCreatedResponse({ description: 'User role created successfully.' })
+  @ApiBadRequestResponse({ description: 'Invalid data for user role.' })
+  create(@Body() createUserRoleDto: CreateUserRoleDto) {
+    return this.userRoleService.create(createUserRoleDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all user roles' })
+  @ApiOkResponse({ description: 'List of user roles.' })
+  findAll() {
+    return this.userRoleService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get user role by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'User role ID' })
+  @ApiOkResponse({ description: 'User role found.' })
+  @ApiNotFoundResponse({ description: 'User role not found.' })
+  findOne(@Param('id') id: string) {
+    return this.userRoleService.findOne(+id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update user role by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'User role ID' })
+  @ApiBody({ type: UpdateUserRoleDto })
+  @ApiOkResponse({ description: 'User role updated successfully.' })
+  @ApiBadRequestResponse({ description: 'Invalid update data.' })
+  @ApiNotFoundResponse({ description: 'User role not found.' })
+  update(
+    @Param('id') id: string,
+    @Body() updateUserRoleDto: UpdateUserRoleDto,
+  ) {
+    return this.userRoleService.update(+id, updateUserRoleDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete user role by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'User role ID' })
+  @ApiOkResponse({ description: 'User role deleted successfully.' })
+  @ApiNotFoundResponse({ description: 'User role not found.' })
+  remove(@Param('id') id: string) {
+    return this.userRoleService.remove(+id);
+  }
+}

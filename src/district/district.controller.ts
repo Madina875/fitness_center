@@ -1,33 +1,75 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DistrictService } from './district.service';
 import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiParam,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('🏙️ Districts')
 @Controller('district')
 export class DistrictController {
   constructor(private readonly districtService: DistrictService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a district' })
+  @ApiBody({ type: CreateDistrictDto })
+  @ApiCreatedResponse({ description: 'District created successfully.' })
+  @ApiBadRequestResponse({ description: 'Invalid district data.' })
   create(@Body() createDistrictDto: CreateDistrictDto) {
     return this.districtService.create(createDistrictDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all districts' })
+  @ApiOkResponse({ description: 'All districts retrieved successfully.' })
   findAll() {
     return this.districtService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a district by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'District ID' })
+  @ApiOkResponse({ description: 'District retrieved successfully.' })
+  @ApiNotFoundResponse({ description: 'District not found.' })
   findOne(@Param('id') id: string) {
     return this.districtService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDistrictDto: UpdateDistrictDto) {
+  @ApiOperation({ summary: 'Update a district by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'District ID' })
+  @ApiBody({ type: UpdateDistrictDto })
+  @ApiOkResponse({ description: 'District updated successfully.' })
+  @ApiBadRequestResponse({ description: 'Invalid update data.' })
+  @ApiNotFoundResponse({ description: 'District not found.' })
+  update(
+    @Param('id') id: string,
+    @Body() updateDistrictDto: UpdateDistrictDto,
+  ) {
     return this.districtService.update(+id, updateDistrictDto);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a district by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'District ID' })
+  @ApiOkResponse({ description: 'District deleted successfully.' })
+  @ApiNotFoundResponse({ description: 'District not found.' })
   remove(@Param('id') id: string) {
     return this.districtService.remove(+id);
   }

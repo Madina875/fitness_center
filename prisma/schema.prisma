@@ -17,10 +17,12 @@ datasource db {
 model User {
   id        Int     @id @default(autoincrement())
   full_name String
-  phone     String? @unique
+  phone     String
   email     String  @unique
-  password  String
-  is_active Boolean @default(false)
+  hashedPassword     String
+  hashedRefreshToken String?
+  is_active          Boolean? @default(false)
+  activation_link    String?
 
   roles             UserRole[]
   centers           UserCenter[]
@@ -253,10 +255,12 @@ model Review {
 model Admin {
   id        Int     @id @default(autoincrement())
   full_name String
-  phone     Int
+  phone     String
   email     String  @unique
-  password  String
-  is_active Boolean
+  hashedPassword     String
+  hashedRefreshToken String?
+  is_active          Boolean? @default(false)
+  activation_link    String?
   is_owner  Boolean
 
   @@map("admin")
