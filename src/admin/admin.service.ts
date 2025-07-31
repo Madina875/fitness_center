@@ -21,7 +21,7 @@ export class AdminService {
         full_name,
         email,
         phone,
-        hashedPassword,
+        hashedPassword: hashedPassword,
       },
     });
   }

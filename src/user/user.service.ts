@@ -21,7 +21,7 @@ export class UserService {
         full_name,
         email,
         phone,
-        hashedPassword,
+        hashedPassword: hashedPassword,
       },
     });
   }

@@ -17,11 +17,11 @@ export class CreateAdminDto {
 
   @ApiProperty()
   @IsString()
-  password: string;
+  password?: string;
 
   @ApiProperty()
   @IsString()
-  confirm_password: string;
+  confirm_password?: string;
 
   @ApiProperty({ default: false })
   @IsBoolean()
