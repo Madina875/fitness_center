@@ -1,0 +1,284 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  full_name String
+  phone     String? @unique
+  email     String  @unique
+  password  String
+  is_active Boolean @default(false)
+
+  roles             UserRole[]
+  centers           UserCenter[]
+  goals             Goal[]
+  payments          Payment[]
+  subscriptions     Subscription[]
+  notifications     Notification[]
+  bookings          ClassBooking[]
+  reviews           Review[]
+  achievements      Achievement[]
+  fitness_centers   FitnessCenter[]
+  scheduled_classes ClassSchedule[]
+
+  @@map("user")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  users UserRole[]
+
+  @@map("role")
+}
+
+model UserRole {
+  roleId Int
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([roleId, userId])
+  @@map("user_role")
+}
+
+model FitnessCenter {
+  id          Int      @id @default(autoincrement())
+  name        String
+  logo        String
+  description String
+  districtId  Int
+  regionId    Int
+  location    String
+  managerId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  district District @relation(fields: [districtId], references: [id])
+  region   Region   @relation(fields: [regionId], references: [id])
+  manager  User     @relation(fields: [managerId], references: [id])
+
+  users         UserCenter[]
+  images        Image[]
+  payments      Payment[]
+  subscriptions Subscription[]
+  equipment     Equipment[]
+  schedules     ClassSchedule[]
+  achievements  Achievement[]
+  reviews       Review[]
+
+  @@map("fitness_center")
+}
+
+model UserCenter {
+  userId     Int
+  centerId   Int
+  isAccepted Boolean
+
+  user   User          @relation(fields: [userId], references: [id])
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@id([userId, centerId])
+  @@map("user_center")
+}
+
+model Image {
+  id       Int     @id @default(autoincrement())
+  url      String
+  is_main  Boolean
+  centerId Int
+
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("images")
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  clientId  Int
+  centerId  Int
+  amount    Decimal
+  method    String
+  status    String
+  payedAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  client User          @relation(fields: [clientId], references: [id])
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("payment")
+}
+
+model Subscription {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  centerId Int
+  planName String
+  startAt  DateTime
+  endAt    DateTime
+  price    Decimal
+  status   String
+
+  user   User          @relation(fields: [userId], references: [id])
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("subscription")
+}
+
+model Equipment {
+  id            Int       @id @default(autoincrement())
+  name          String
+  type          String
+  centerId      Int
+  available     Boolean
+  maintenanceAt DateTime?
+
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("equipment")
+}
+
+model ClassSchedule {
+  id           Int      @id @default(autoincrement())
+  centerId     Int
+  title        String
+  instructorId Int
+  startsAt     DateTime
+  endsAt       DateTime
+
+  center     FitnessCenter  @relation(fields: [centerId], references: [id])
+  instructor User           @relation(fields: [instructorId], references: [id])
+  bookings   ClassBooking[]
+
+  @@map("class_schedule")
+}
+
+model ClassBooking {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  classId  Int
+  bookedAt DateTime
+  attended Boolean
+
+  user  User          @relation(fields: [userId], references: [id])
+  class ClassSchedule @relation(fields: [classId], references: [id])
+
+  @@map("class_booking")
+}
+
+model Goal {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  title    String
+  target   String
+  status   String
+  deadline DateTime
+
+  user         User              @relation(fields: [userId], references: [id])
+  logs         GoalProgressLog[]
+  achievements Achievement[]
+
+  @@map("goals")
+}
+
+model GoalProgressLog {
+  id       Int      @id @default(autoincrement())
+  goalId   Int
+  progress String
+  note     String
+  loggedAt DateTime
+
+  goal Goal @relation(fields: [goalId], references: [id])
+
+  @@map("goal_progress")
+}
+
+model Achievement {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  goalId    Int
+  title     String
+  achivedAt DateTime
+  centerId  Int
+
+  user   User          @relation(fields: [userId], references: [id])
+  goal   Goal          @relation(fields: [goalId], references: [id])
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("achivements")
+}
+
+model Notification {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  title   String
+  body    String
+  type    String
+  is_read Boolean
+  sentAt  DateTime
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notification")
+}
+
+model Review {
+  id       Int    @id @default(autoincrement())
+  rating   Int
+  comment  String
+  userId   Int
+  centerId Int
+
+  user   User          @relation(fields: [userId], references: [id])
+  center FitnessCenter @relation(fields: [centerId], references: [id])
+
+  @@map("reviews")
+}
+
+model Admin {
+  id        Int     @id @default(autoincrement())
+  full_name String
+  phone     Int
+  email     String  @unique
+  password  String
+  is_active Boolean
+  is_owner  Boolean
+
+  @@map("admin")
+}
+
+model Region {
+  id        Int        @id @default(autoincrement())
+  name      String
+  districts District[]
+
+  fitness_centers FitnessCenter[]
+
+  @@map("region")
+}
+
+model District {
+  id       Int    @id @default(autoincrement())
+  name     String
+  regionId Int
+  region   Region @relation(fields: [regionId], references: [id])
+
+  fitness_centers FitnessCenter[]
+
+  @@map("district")
+}
