@@ -35,6 +35,6 @@ jobs:
             fi
             npm install
             npm run build
-            pm2 restart fitness_center_app || pm2 start dist/main.js --name fitness_center_app
+            pm2 restart fitness_center || pm2 start dist/main.js --name fitness_center
           "
         shell: bash
