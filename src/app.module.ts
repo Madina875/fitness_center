@@ -23,7 +23,29 @@ import { AchievementModule } from './achievement/achievement.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }), RegionModule, PrismaModule, DistrictModule, FitnessCenterModule, UserModule, AdminModule, RoleModule, UserRoleModule, UserCenterModule, ImageModule, PaymentModule, SubscriptionModule, EquipmentModule, ClassScheduleModule, ClassBookingModule, GoalModule, GoalProgressLogModule, AchievementModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    RegionModule,
+    PrismaModule,
+    DistrictModule,
+    FitnessCenterModule,
+    UserModule,
+    AdminModule,
+    RoleModule,
+    UserRoleModule,
+    UserCenterModule,
+    ImageModule,
+    PaymentModule,
+    SubscriptionModule,
+    EquipmentModule,
+    ClassScheduleModule,
+    ClassBookingModule,
+    GoalModule,
+    GoalProgressLogModule,
+    AchievementModule,
+    AuthModule,
+    AppModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

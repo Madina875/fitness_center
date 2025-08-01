@@ -19,6 +19,7 @@ model User {
   full_name String
   phone     String?
   email     String  @unique
+  role      String?
   hashedPassword     String
   hashedRefreshToken String?
   is_active          Boolean? @default(false)
