@@ -29,5 +29,5 @@ export class CreateAdminDto {
 
   @ApiProperty({ default: false })
   @IsBoolean()
-  is_owner?: boolean;
+  is_owner: boolean;
 }

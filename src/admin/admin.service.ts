@@ -9,19 +9,20 @@ export class AdminService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createAdminDto: CreateAdminDto) {
-    const { full_name, email, phone, password, confirm_password } =
+    const { full_name, email, phone, password, confirm_password, is_owner } =
       createAdminDto;
     if (password !== confirm_password) {
       throw new BadRequestException('parollar mos emas');
     }
     const hashedPassword = await bcrypt.hash(password!, 7);
 
-    return this.prismaService.user.create({
+    return this.prismaService.admin.create({
       data: {
         full_name,
         email,
         phone,
         hashedPassword: hashedPassword,
+        is_owner,
       },
     });
   }
