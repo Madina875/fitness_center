@@ -14,8 +14,6 @@ export class CreateAchievementDto {
   @IsString()
   title: string;
 
-  @ApiProperty()
-  @IsDateString()
   achivedAt: string;
 
   @ApiProperty()

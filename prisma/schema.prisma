@@ -17,7 +17,7 @@ datasource db {
 model User {
   id        Int     @id @default(autoincrement())
   full_name String
-  phone     String
+  phone     String?
   email     String  @unique
   hashedPassword     String
   hashedRefreshToken String?
@@ -71,8 +71,8 @@ model FitnessCenter {
   regionId    Int
   location    String
   managerId   Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
 
   district District @relation(fields: [districtId], references: [id])
   region   Region   @relation(fields: [regionId], references: [id])
@@ -96,8 +96,6 @@ model UserCenter {
 
   userId     Int
   centerId   Int
-  isAccepted Boolean
-
   user   User          @relation(fields: [userId], references: [id])
   center FitnessCenter @relation(fields: [centerId], references: [id])
 
@@ -108,7 +106,7 @@ model UserCenter {
 model Image {
   id       Int     @id @default(autoincrement())
   url      String
-  is_main  Boolean
+  is_main  Boolean? @default(false)
   centerId Int
 
   center FitnessCenter @relation(fields: [centerId], references: [id])
@@ -123,8 +121,8 @@ model Payment {
   amount    Decimal
   method    String
   status    String
-  payedAt   DateTime
-  updatedAt DateTime @updatedAt
+  payedAt   DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   client User          @relation(fields: [clientId], references: [id])
   center FitnessCenter @relation(fields: [centerId], references: [id])
@@ -132,15 +130,22 @@ model Payment {
   @@map("payment")
 }
 
+enum SubscriptionStatus {
+  active
+  inactione
+  expired
+  cancelled
+}
+
 model Subscription {
   id       Int      @id @default(autoincrement())
   userId   Int
   centerId Int
   planName String
-  startAt  DateTime
-  endAt    DateTime
+  startAt  DateTime?
+  endAt    DateTime?
   price    Decimal
-  status   String
+  status   SubscriptionStatus? @default(active)
 
   user   User          @relation(fields: [userId], references: [id])
   center FitnessCenter @relation(fields: [centerId], references: [id])
@@ -153,7 +158,7 @@ model Equipment {
   name          String
   type          String
   centerId      Int
-  available     Boolean
+  available     Boolean? @default(false)
   maintenanceAt DateTime?
 
   center FitnessCenter @relation(fields: [centerId], references: [id])
@@ -180,8 +185,8 @@ model ClassBooking {
   id       Int      @id @default(autoincrement())
   userId   Int
   classId  Int
-  bookedAt DateTime
-  attended Boolean
+  bookedAt DateTime? @default(now())
+  attended Boolean? @default(false)
 
   user  User          @relation(fields: [userId], references: [id])
   class ClassSchedule @relation(fields: [classId], references: [id])
@@ -195,7 +200,7 @@ model Goal {
   title    String
   target   String
   status   String
-  deadline DateTime
+  deadline String
 
   user         User              @relation(fields: [userId], references: [id])
   logs         GoalProgressLog[]
@@ -208,8 +213,8 @@ model GoalProgressLog {
   id       Int      @id @default(autoincrement())
   goalId   Int
   progress String
-  note     String
-  loggedAt DateTime
+  note     String?
+  loggedAt DateTime? @default(now())
 
   goal Goal @relation(fields: [goalId], references: [id])
 
@@ -220,8 +225,8 @@ model Achievement {
   id        Int      @id @default(autoincrement())
   userId    Int
   goalId    Int
-  title     String
-  achivedAt DateTime
+  title     String?
+  achivedAt DateTime? @default(now())
   centerId  Int
 
   user   User          @relation(fields: [userId], references: [id])
@@ -237,8 +242,8 @@ model Notification {
   title   String
   body    String
   type    String
-  is_read Boolean
-  sentAt  DateTime
+  is_read Boolean? @default(false)
+  sentAt  DateTime? @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
@@ -251,6 +256,8 @@ model Review {
   comment  String
   userId   Int
   centerId Int
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   user   User          @relation(fields: [userId], references: [id])
   center FitnessCenter @relation(fields: [centerId], references: [id])
@@ -261,13 +268,13 @@ model Review {
 model Admin {
   id        Int     @id @default(autoincrement())
   full_name String
-  phone     String
+  phone     String?
   email     String  @unique
   hashedPassword     String
   hashedRefreshToken String?
   is_active          Boolean? @default(false)
   activation_link    String?
-  is_owner  Boolean
+  is_owner  Boolean? @default(false)
 
   @@map("admin")
 }
@@ -275,8 +282,8 @@ model Admin {
 model Region {
   id        Int        @id @default(autoincrement())
   name      String
+  
   districts District[]
-
   fitness_centers FitnessCenter[]
 
   @@map("region")
@@ -286,8 +293,8 @@ model District {
   id       Int    @id @default(autoincrement())
   name     String
   regionId Int
-  region   Region @relation(fields: [regionId], references: [id])
 
+  region   Region @relation(fields: [regionId], references: [id])
   fitness_centers FitnessCenter[]
 
   @@map("district")

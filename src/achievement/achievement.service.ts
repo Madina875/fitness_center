@@ -7,18 +7,28 @@ import { PrismaService } from '../prisma/prisma.service';
 export class AchievementService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(createAchievementDto: CreateAchievementDto) {
-    return this.prismaService.achievement.create({
+  async create(createAchievementDto: CreateAchievementDto) {
+    return await this.prismaService.achievement.create({
       data: createAchievementDto,
     });
   }
 
-  findAll() {
-    return this.prismaService.achievement.findMany();
+  async findAll() {
+    return await this.prismaService.achievement.findMany({
+      include: { user: true, goal: true, center: true },
+    });
   }
 
-  findOne(id: number) {
-    return this.prismaService.achievement.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const achievement = await this.prismaService.achievement.findUnique({
+      where: { id },
+    });
+
+    if (!achievement) {
+      throw new NotFoundException(`Achievement with ID ${id} not found`);
+    }
+
+    return achievement;
   }
 
   async update(id: number, updateAchievementDto: UpdateAchievementDto) {
@@ -27,17 +37,28 @@ export class AchievementService {
     });
 
     if (!existing) {
-      throw new NotFoundException(`Car history with ID ${id} not found`);
+      throw new NotFoundException(`Achievement with ID ${id} not found`);
     }
 
-    return this.prismaService.achievement.update({
+    return await this.prismaService.achievement.update({
       where: { id },
       data: updateAchievementDto,
     });
   }
 
   async remove(id: number) {
-    await this.prismaService.achievement.delete({ where: { id } });
-    return 'removed successfully!!!';
+    const existing = await this.prismaService.achievement.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Achievement with ID ${id} not found`);
+    }
+
+    await this.prismaService.achievement.delete({
+      where: { id },
+    });
+
+    return { message: 'Achievement removed successfully!' };
   }
 }
