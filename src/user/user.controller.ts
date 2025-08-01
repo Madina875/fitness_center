@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +21,9 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { Response } from 'express';
+import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
+import { PasswordUserDto } from './dto/password-user.dto';
 
 @ApiTags('👤 Users')
 @Controller('user')
@@ -69,5 +73,25 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Patch('forget-password/:id')
+  @ApiOperation({ summary: 'Forget password user by ID' })
+  async forgetPassword(
+    @Param('id') userId: string,
+    @Body() passwordUserDto: PasswordUserDto,
+    @Res() res: Response,
+  ) {
+    return this.userService.forgetPassword(+userId, res, passwordUserDto);
+  }
+
+  @Patch('reset-password/:id')
+  @ApiOperation({ summary: 'Reset password user by ID' })
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordUserDto,
+    @Param('id') userId: string,
+    @Res() res: Response,
+  ) {
+    return this.userService.resetPassword(+userId, res, resetPasswordDto);
   }
 }

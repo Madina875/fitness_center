@@ -14,7 +14,9 @@ export class SubscriptionService {
   }
 
   findAll() {
-    return this.prismaService.subscription.findMany();
+    return this.prismaService.subscription.findMany({
+      include: { user: true, center: true },
+    });
   }
 
   findOne(id: number) {

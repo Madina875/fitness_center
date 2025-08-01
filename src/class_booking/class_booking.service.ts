@@ -13,7 +13,9 @@ export class ClassBookingService {
   }
 
   findAll() {
-    return this.prismaService.classBooking.findMany();
+    return this.prismaService.classBooking.findMany({
+      include: { user: true, class: true },
+    });
   }
 
   findOne(id: number) {

@@ -10,11 +10,11 @@ export class CreateGoalProgressLogDto {
   @IsString()
   progress: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
-  note: string;
+  note?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsDateString()
-  loggedAt: string;
+  loggedAt?: string;
 }

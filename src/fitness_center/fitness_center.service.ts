@@ -14,7 +14,18 @@ export class FitnessCenterService {
   }
 
   findAll() {
-    return this.prismaService.fitnessCenter.findMany();
+    return this.prismaService.fitnessCenter.findMany({
+      include: {
+        users: { include: { user: true } },
+        images: true,
+        payments: true,
+        subscriptions: true,
+        equipment: true,
+        schedules: true,
+        achievements: true,
+        reviews: true,
+      },
+    });
   }
 
   findOne(id: number) {

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
+import { SubscriptionStatus } from '../../../generated/prisma';
 
 export class CreateSubscriptionDto {
   @ApiProperty()
@@ -14,18 +15,13 @@ export class CreateSubscriptionDto {
   @IsString()
   planName: string;
 
-  @ApiProperty()
-  @IsDateString()
-  startAt: string;
-
-  @ApiProperty()
-  @IsDateString()
-  endAt: string;
+  startAt?: string;
+  endAt?: string;
 
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
-  @IsString()
-  status: string;
+  @ApiProperty({ enum: SubscriptionStatus, required: false })
+  @IsEnum(SubscriptionStatus)
+  status?: SubscriptionStatus;
 }

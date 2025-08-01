@@ -17,6 +17,7 @@ export class DistrictService {
     return this.prismaService.district.findMany({
       include: {
         region: true,
+        fitness_centers: true,
       },
     });
   }

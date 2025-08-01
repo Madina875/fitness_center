@@ -22,7 +22,7 @@ export class CreatePaymentDto {
   @IsString()
   status: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsDateString()
-  payedAt: string;
+  payedAt?: string;
 }

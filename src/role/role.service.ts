@@ -14,7 +14,9 @@ export class RoleService {
   }
 
   findAll() {
-    return this.prismaService.role.findMany();
+    return this.prismaService.role.findMany({
+      include: { users: { include: { user: true } } },
+    });
   }
 
   async findOne(id: number) {
@@ -23,9 +25,8 @@ export class RoleService {
     });
 
     if (!role) {
-      throw new NotFoundException(`Roleion with ID ${id} not found`);
+      throw new NotFoundException(`Role with ID ${id} not found`);
     }
-
     return role;
   }
 

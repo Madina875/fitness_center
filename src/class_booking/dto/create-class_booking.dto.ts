@@ -10,11 +10,11 @@ export class CreateClassBookingDto {
   @IsNumber()
   classId: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsDateString()
-  bookedAt: string;
+  bookedAt?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsBoolean()
-  attended: boolean;
+  attended?: boolean;
 }

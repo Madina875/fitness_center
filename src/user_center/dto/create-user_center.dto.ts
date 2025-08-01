@@ -9,8 +9,4 @@ export class CreateUserCenterDto {
   @ApiProperty()
   @IsNumber()
   centerId: number;
-
-  @ApiProperty()
-  @IsBoolean()
-  isAccepted: boolean;
 }

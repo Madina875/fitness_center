@@ -6,9 +6,9 @@ export class CreateImageDto {
   @IsString()
   url: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsBoolean()
-  is_main: boolean;
+  is_main?: boolean;
 
   @ApiProperty()
   @IsNumber()

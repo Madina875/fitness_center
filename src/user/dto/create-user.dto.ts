@@ -23,7 +23,7 @@ export class CreateUserDto {
   @IsString()
   confirm_password?: string;
 
-  @ApiProperty({ default: false })
+  @ApiProperty({ default: false, required: false })
   @IsBoolean()
   is_active?: boolean;
 

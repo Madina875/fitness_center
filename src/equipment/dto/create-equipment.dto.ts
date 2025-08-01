@@ -20,9 +20,9 @@ export class CreateEquipmentDto {
   @IsNumber()
   centerId: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsBoolean()
-  available: boolean;
+  available?: boolean;
 
   @ApiProperty({ required: false })
   @IsOptional()

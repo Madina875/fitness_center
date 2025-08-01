@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -20,6 +21,9 @@ import {
   ApiNotFoundResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { ResetPasswordAdminDto } from './dto/reset-password-admin.dto';
+import { PasswordAdminDto } from './dto/password-admin.dto';
+import { Response } from 'express';
 
 @ApiTags('🧑‍💼 Admins')
 @Controller('admin')
@@ -79,5 +83,25 @@ export class AdminController {
   @ApiNotFoundResponse({ description: 'Admin not found.' })
   remove(@Param('id') id: string) {
     return this.adminService.remove(+id);
+  }
+
+  @Patch('forget-password/:id')
+  @ApiOperation({ summary: 'Forget password admin by ID' })
+  async forgetPassword(
+    @Param('id') adminId: string,
+    @Body() passwordAdminDto: PasswordAdminDto,
+    @Res() res: Response,
+  ) {
+    return this.adminService.forgetPassword(+adminId, res, passwordAdminDto);
+  }
+
+  @Patch('reset-password/:id')
+  @ApiOperation({ summary: 'Reset password admin by ID' })
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordAdminDto,
+    @Param('id') adminId: string,
+    @Res() res: Response,
+  ) {
+    return this.adminService.resetPassword(+adminId, res, resetPasswordDto);
   }
 }

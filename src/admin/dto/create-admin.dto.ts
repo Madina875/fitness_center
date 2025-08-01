@@ -9,7 +9,7 @@ export class CreateAdminDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  phone: string;
+  phone?: string;
 
   @ApiProperty()
   @IsEmail()
@@ -23,11 +23,9 @@ export class CreateAdminDto {
   @IsString()
   confirm_password?: string;
 
-  @ApiProperty({ default: false })
+  @ApiProperty({ default: false, required: false })
   @IsBoolean()
   is_active?: boolean;
 
-  @ApiProperty({ default: false })
-  @IsBoolean()
-  is_owner: boolean;
+  is_owner?: boolean;
 }

@@ -14,7 +14,9 @@ export class RegionService {
   }
 
   findAll() {
-    return this.prismaService.region.findMany({ include: { districts: true } });
+    return this.prismaService.region.findMany({
+      include: { districts: true, fitness_centers: true },
+    });
   }
 
   async findOne(id: number) {

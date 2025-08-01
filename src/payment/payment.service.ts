@@ -14,7 +14,9 @@ export class PaymentService {
   }
 
   findAll() {
-    return this.prismaService.payment.findMany();
+    return this.prismaService.payment.findMany({
+      include: { client: true, center: true },
+    });
   }
 
   findOne(id: number) {

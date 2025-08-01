@@ -14,7 +14,7 @@ export class EquipmentService {
   }
 
   findAll() {
-    return this.prismaService.equipment.findMany();
+    return this.prismaService.equipment.findMany({ include: { center: true } });
   }
 
   findOne(id: number) {

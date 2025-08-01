@@ -14,7 +14,9 @@ export class GoalService {
   }
 
   findAll() {
-    return this.prismaService.goal.findMany();
+    return this.prismaService.goal.findMany({
+      include: { user: true, logs: true, achievements: true },
+    });
   }
 
   findOne(id: number) {

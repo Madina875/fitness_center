@@ -14,7 +14,7 @@ export class ImageService {
   }
 
   findAll() {
-    return this.prismaService.image.findMany();
+    return this.prismaService.image.findMany({ include: { center: true } });
   }
 
   findOne(id: number) {

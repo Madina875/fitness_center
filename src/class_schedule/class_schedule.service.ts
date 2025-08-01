@@ -14,7 +14,9 @@ export class ClassScheduleService {
   }
 
   findAll() {
-    return this.prismaService.classSchedule.findMany();
+    return this.prismaService.classSchedule.findMany({
+      include: { instructor: true, center: true },
+    });
   }
 
   findOne(id: number) {
