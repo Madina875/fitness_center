@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RegionService } from './region.service';
 import { CreateRegionDto } from './dto/create-region.dto';
@@ -20,6 +21,7 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🌍 Regions')
 @Controller('region')
@@ -35,6 +37,7 @@ export class RegionController {
     return this.regionService.create(createRegionDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all regions' })
   @ApiOkResponse({ description: 'List of all regions.' })
