@@ -27,6 +27,7 @@ import { PasswordAdminDto } from './dto/password-admin.dto';
 import { Response } from 'express';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AdminSelfGuard } from '../common/guards/admin-self.guard';
+import { SelfOrRoleGuard } from '../common/guards/self-role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🧑‍💼 Admins')
@@ -34,6 +35,7 @@ import { AuthGuard } from '../common/guards/jwt-auth.guard';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Post()
   @ApiOperation({ summary: 'Create a new admin' })
   @ApiBody({ type: CreateAdminDto })
@@ -45,6 +47,7 @@ export class AdminController {
     return this.adminService.create(createAdminDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
   @ApiOkResponse({
@@ -54,6 +57,7 @@ export class AdminController {
     return this.adminService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Get(':id')
   @ApiOperation({ summary: 'Get an admin by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Admin ID' })
@@ -65,6 +69,7 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'admin']), AdminSelfGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update an admin by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Admin ID' })
@@ -90,6 +95,7 @@ export class AdminController {
     return this.adminService.remove(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']), AdminSelfGuard)
   @Patch('forget-password/:id')
   @ApiOperation({ summary: 'Forget password admin by ID' })
   async forgetPassword(
@@ -100,6 +106,7 @@ export class AdminController {
     return this.adminService.forgetPassword(+adminId, res, passwordAdminDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']), AdminSelfGuard)
   @Patch('reset-password/:id')
   @ApiOperation({ summary: 'Reset password admin by ID' })
   async resetPassword(

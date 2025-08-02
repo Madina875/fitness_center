@@ -43,6 +43,7 @@ export function RoleGuard(allowedRoles: string[] | 'all') {
         process.env.ACCESS_TOKEN_KEY,
         process.env.SUPERADMIN_ACCESS_TOKEN_KEY,
         process.env.OWNER_ACCESS_TOKEN_KEY,
+        process.env.CLIENT_ACCESS_TOKEN_KEY,
         process.env.WORKER_ACCESS_TOKEN_KEY,
       ];
 

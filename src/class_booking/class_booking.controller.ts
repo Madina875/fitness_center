@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ClassBookingService } from './class_booking.service';
 import { CreateClassBookingDto } from './dto/create-class_booking.dto';
@@ -20,12 +21,15 @@ import {
   ApiNotFoundResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('📅 Class Bookings')
 @Controller('class-booking')
 export class ClassBookingController {
   constructor(private readonly classBookingService: ClassBookingService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin', 'user']))
   @Post()
   @ApiOperation({ summary: 'Create a class booking' })
   @ApiBody({ type: CreateClassBookingDto })
@@ -37,6 +41,7 @@ export class ClassBookingController {
     return this.classBookingService.create(createClassBookingDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin', 'user']))
   @Get()
   @ApiOperation({ summary: 'Get all class bookings' })
   @ApiOkResponse({
@@ -46,6 +51,7 @@ export class ClassBookingController {
     return this.classBookingService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin', 'user']))
   @Get(':id')
   @ApiOperation({ summary: 'Get a class booking by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class Booking ID' })
@@ -57,6 +63,7 @@ export class ClassBookingController {
     return this.classBookingService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin', 'user']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update a class booking by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class Booking ID' })
@@ -73,6 +80,7 @@ export class ClassBookingController {
     return this.classBookingService.update(+id, updateClassBookingDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a class booking by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class Booking ID' })

@@ -28,6 +28,7 @@ export class AuthGuard implements CanActivate {
       process.env.OWNER_ACCESS_TOKEN_KEY,
       process.env.ACCESS_TOKEN_KEY,
       process.env.SUPERADMIN_ACCESS_TOKEN_KEY,
+      process.env.CLIENT_ACCESS_TOKEN_KEY,
       process.env.ADMIN_ACCESS_TOKEN_KEY,
     ];
 

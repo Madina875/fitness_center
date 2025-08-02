@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('💳 Payments')
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Post()
   @ApiOperation({ summary: 'Create a new payment' })
   @ApiBody({ type: CreatePaymentDto })
@@ -35,6 +39,7 @@ export class PaymentController {
     return this.paymentService.create(createPaymentDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Get()
   @ApiOperation({ summary: 'Retrieve all payments' })
   @ApiOkResponse({ description: 'List of payments.' })
@@ -42,6 +47,7 @@ export class PaymentController {
     return this.paymentService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve a payment by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Payment ID' })
@@ -51,6 +57,7 @@ export class PaymentController {
     return this.paymentService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update a payment by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Payment ID' })
@@ -62,6 +69,7 @@ export class PaymentController {
     return this.paymentService.update(+id, updatePaymentDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a payment by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Payment ID' })

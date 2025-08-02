@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { CreateImageDto } from './dto/create-image.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🖼️ Images')
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Post()
   @ApiOperation({ summary: 'Upload a new image' })
   @ApiBody({ type: CreateImageDto })
@@ -51,6 +55,7 @@ export class ImageController {
     return this.imageService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update an image by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Image ID' })
@@ -62,6 +67,7 @@ export class ImageController {
     return this.imageService.update(+id, updateImageDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an image by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Image ID' })

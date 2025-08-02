@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @ApiTags('🔔 Subscriptions')
 @Controller('subscription')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Post()
   @ApiOperation({ summary: 'Create a new subscription' })
   @ApiBody({ type: CreateSubscriptionDto })
@@ -35,13 +39,14 @@ export class SubscriptionController {
     return this.subscriptionService.create(createSubscriptionDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Get()
   @ApiOperation({ summary: 'Get all subscriptions' })
   @ApiOkResponse({ description: 'List of subscriptions.' })
   findAll() {
     return this.subscriptionService.findAll();
   }
-
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Get(':id')
   @ApiOperation({ summary: 'Get subscription by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Subscription ID' })
@@ -51,6 +56,7 @@ export class SubscriptionController {
     return this.subscriptionService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update subscription by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Subscription ID' })
@@ -65,6 +71,7 @@ export class SubscriptionController {
     return this.subscriptionService.update(+id, updateSubscriptionDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete subscription by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Subscription ID' })

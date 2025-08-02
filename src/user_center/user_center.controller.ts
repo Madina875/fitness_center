@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserCenterService } from './user_center.service';
 import { CreateUserCenterDto } from './dto/create-user_center.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @ApiTags('🔗 User Centers')
 @Controller('user-center')
 export class UserCenterController {
   constructor(private readonly userCenterService: UserCenterService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['manager', 'superadmin', 'admin', 'user']))
   @Post()
   @ApiOperation({ summary: 'Create a new user center relation' })
   @ApiBody({ type: CreateUserCenterDto })
@@ -35,6 +39,7 @@ export class UserCenterController {
     return this.userCenterService.create(createUserCenterDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['manager', 'superadmin', 'admin', 'user']))
   @Get()
   @ApiOperation({ summary: 'Get all user centers' })
   @ApiOkResponse({ description: 'List of user centers.' })
@@ -42,6 +47,7 @@ export class UserCenterController {
     return this.userCenterService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['manager', 'superadmin', 'admin', 'user']))
   @Get(':id')
   @ApiOperation({ summary: 'Get user center by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'User center ID' })
@@ -51,6 +57,7 @@ export class UserCenterController {
     return this.userCenterService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['manager', 'superadmin', 'admin', 'user']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update user center by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'User center ID' })
@@ -65,6 +72,7 @@ export class UserCenterController {
     return this.userCenterService.update(+id, updateUserCenterDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['manager', 'superadmin', 'admin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user center by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'User center ID' })

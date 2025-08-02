@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FitnessCenterService } from './fitness_center.service';
 import { CreateFitnessCenterDto } from './dto/create-fitness_center.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🧘‍♂️ Fitness Centers')
 @Controller('fitness-center')
 export class FitnessCenterController {
   constructor(private readonly fitnessCenterService: FitnessCenterService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Post()
   @ApiOperation({ summary: 'Create a fitness center' })
   @ApiBody({ type: CreateFitnessCenterDto })
@@ -65,6 +69,7 @@ export class FitnessCenterController {
     return this.fitnessCenterService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update a fitness center by ID' })
   @ApiParam({
@@ -89,6 +94,7 @@ export class FitnessCenterController {
     return this.fitnessCenterService.update(+id, updateFitnessCenterDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a fitness center by ID' })
   @ApiParam({

@@ -29,7 +29,7 @@ import { RoleGuard } from '../common/guards/role.guard';
 export class AchievementController {
   constructor(private readonly achievementService: AchievementService) {}
 
-  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager', 'admin', 'superadmin']))
   @Post()
   @ApiOperation({ summary: 'Create a new achievement' })
   @ApiBody({ type: CreateAchievementDto })
@@ -50,7 +50,7 @@ export class AchievementController {
     return this.achievementService.findAll();
   }
 
-  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager', 'admin', 'superadmin']))
   @Get(':id')
   @ApiOperation({ summary: 'Get an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })
@@ -62,7 +62,7 @@ export class AchievementController {
     return this.achievementService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager', 'admin', 'superadmin']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })
@@ -79,7 +79,7 @@ export class AchievementController {
     return this.achievementService.update(+id, updateAchievementDto);
   }
 
-  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager', 'admin', 'superadmin']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })

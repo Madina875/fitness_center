@@ -30,7 +30,7 @@ import { AdminSelfGuard } from '../common/guards/admin-self.guard';
 export class RegionController {
   constructor(private readonly regionService: RegionService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Post()
   @ApiOperation({ summary: 'Create a new region' })
   @ApiBody({ type: CreateRegionDto })
@@ -40,7 +40,7 @@ export class RegionController {
     return this.regionService.create(createRegionDto);
   }
 
-  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Get()
   @ApiOperation({ summary: 'Get all regions' })
   @ApiOkResponse({ description: 'List of all regions.' })
@@ -57,6 +57,7 @@ export class RegionController {
     return this.regionService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update region by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Region ID' })
@@ -68,6 +69,7 @@ export class RegionController {
     return this.regionService.update(+id, updateRegionDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete region by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Region ID' })

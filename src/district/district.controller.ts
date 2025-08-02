@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DistrictService } from './district.service';
 import { CreateDistrictDto } from './dto/create-district.dto';
@@ -20,12 +21,15 @@ import {
   ApiNotFoundResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🏙️ Districts')
 @Controller('district')
 export class DistrictController {
   constructor(private readonly districtService: DistrictService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']))
   @Post()
   @ApiOperation({ summary: 'Create a district' })
   @ApiBody({ type: CreateDistrictDto })
@@ -51,6 +55,7 @@ export class DistrictController {
     return this.districtService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update a district by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'District ID' })
@@ -65,6 +70,7 @@ export class DistrictController {
     return this.districtService.update(+id, updateDistrictDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a district by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'District ID' })

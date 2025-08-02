@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
@@ -20,12 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🏋️‍♂️ Equipment')
 @Controller('equipment')
 export class EquipmentController {
   constructor(private readonly equipmentService: EquipmentService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Post()
   @ApiOperation({ summary: 'Create a new equipment item' })
   @ApiBody({ type: CreateEquipmentDto })
@@ -51,6 +55,7 @@ export class EquipmentController {
     return this.equipmentService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update equipment by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Equipment ID' })
@@ -65,6 +70,7 @@ export class EquipmentController {
     return this.equipmentService.update(+id, updateEquipmentDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete equipment by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Equipment ID' })
