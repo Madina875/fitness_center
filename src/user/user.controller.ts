@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,6 +25,9 @@ import {
 import { Response } from 'express';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
 import { PasswordUserDto } from './dto/password-user.dto';
+import { SelfOrRoleGuard } from '../common/guards/self-role.guard';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('👤 Users')
 @Controller('user')
@@ -66,6 +70,11 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseGuards(
+    AuthGuard,
+    RoleGuard(['manager', 'user']),
+    SelfOrRoleGuard(['manager', 'user']),
+  )
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'User ID' })

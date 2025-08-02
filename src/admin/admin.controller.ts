@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -24,6 +25,9 @@ import {
 import { ResetPasswordAdminDto } from './dto/reset-password-admin.dto';
 import { PasswordAdminDto } from './dto/password-admin.dto';
 import { Response } from 'express';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AdminSelfGuard } from '../common/guards/admin-self.guard';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('🧑‍💼 Admins')
 @Controller('admin')
@@ -74,6 +78,7 @@ export class AdminController {
     return this.adminService.update(+id, updateAdminDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['admin', 'superadmin']), AdminSelfGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an admin by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Admin ID' })

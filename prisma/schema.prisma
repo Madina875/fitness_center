@@ -56,7 +56,7 @@ model UserRole {
   roleId Int
   userId Int
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id] , onDelete: Cascade)
   role Role @relation(fields: [roleId], references: [id])
 
   @@unique([roleId, userId])
@@ -131,7 +131,8 @@ model Payment {
   @@map("payment")
 }
 
-enum SubscriptionStatus {
+/// @@ignore
+ enum SubscriptionStatus {
   active
   inactione
   expired

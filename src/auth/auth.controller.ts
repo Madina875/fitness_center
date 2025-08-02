@@ -14,17 +14,14 @@ import {
 import { AuthService } from './auth.service';
 
 import { Request, Response } from 'express';
-import {
-  GetCurrentAdmin,
-  GetCurrentAdminId,
-  GetCurrentUserId,
-  GetCurrrentUser,
-} from '../common/decorators';
-import { RefreshTokenAdminGuard, RefreshTokenGuard } from '../common/guards';
+import { GetCurrentUserId, GetCurrrentUser } from '../common/decorators';
+import { RefreshTokenGuard } from '../common/guards';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { SignInUserDto } from '../user/dto/sign-in-user.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { SignInAdminDto } from '../admin/dto/sign-in-admin.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -100,7 +97,7 @@ export class AuthController {
   ) {
     return this.authService.signoutAdmin(+id, res);
   }
-  
+
   @Post('admin/refresh')
   @HttpCode(HttpStatus.OK)
   refreshAdmin(@Req() req: Request, @Res({ passthrough: true }) res: Response) {

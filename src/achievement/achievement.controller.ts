@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AchievementService } from './achievement.service';
 import { CreateAchievementDto } from './dto/create-achievement.dto';
@@ -20,12 +21,15 @@ import {
   ApiNotFoundResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @ApiTags('🏆 Achievements')
 @Controller('achievement')
 export class AchievementController {
   constructor(private readonly achievementService: AchievementService) {}
 
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
   @Post()
   @ApiOperation({ summary: 'Create a new achievement' })
   @ApiBody({ type: CreateAchievementDto })
@@ -46,6 +50,7 @@ export class AchievementController {
     return this.achievementService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
   @Get(':id')
   @ApiOperation({ summary: 'Get an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })
@@ -57,6 +62,7 @@ export class AchievementController {
     return this.achievementService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
   @Patch(':id')
   @ApiOperation({ summary: 'Update an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })
@@ -73,6 +79,7 @@ export class AchievementController {
     return this.achievementService.update(+id, updateAchievementDto);
   }
 
+  @UseGuards(AuthGuard, RoleGuard(['user', 'manager']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an achievement by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Achievement ID' })

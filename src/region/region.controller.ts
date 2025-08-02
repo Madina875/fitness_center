@@ -22,12 +22,15 @@ import {
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { RoleGuard } from '../common/guards/role.guard';
+import { AdminSelfGuard } from '../common/guards/admin-self.guard';
 
 @ApiTags('🌍 Regions')
 @Controller('region')
 export class RegionController {
   constructor(private readonly regionService: RegionService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new region' })
   @ApiBody({ type: CreateRegionDto })
@@ -37,7 +40,7 @@ export class RegionController {
     return this.regionService.create(createRegionDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Get()
   @ApiOperation({ summary: 'Get all regions' })
   @ApiOkResponse({ description: 'List of all regions.' })
