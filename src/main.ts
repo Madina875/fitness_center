@@ -4,12 +4,14 @@ import chalk from 'chalk';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.PORT;
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
     .setTitle('🏆 **Fitness Center API** 🏋️‍♂️')
