@@ -4,9 +4,10 @@ import { Request } from 'express';
 import { JwtFromRequestFunction, Strategy } from 'passport-jwt';
 import { JwtPayload, JwtPayloadWithRefreshToken } from '../types';
 import * as jwt from 'jsonwebtoken';
+import { winstonLogger } from '../loggger/logger';
 
 export const cookieExtractor: JwtFromRequestFunction = (req: Request) => {
-  console.log(req.cookies);
+  winstonLogger.info(req.cookies);
   if (req && req.cookies) {
     return req.cookies['refreshToken'];
   }

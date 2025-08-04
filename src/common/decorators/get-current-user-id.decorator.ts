@@ -4,6 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { JwtPayload } from '../types';
+import { winstonLogger } from '../loggger/logger';
 
 export const GetCurrentUserId = createParamDecorator(
   (_: undefined, context: ExecutionContext): number => {
@@ -12,7 +13,7 @@ export const GetCurrentUserId = createParamDecorator(
     if (!user) {
       throw new ForbiddenException("Token noto'g'ri.");
     }
-    console.log('user', user);
+    winstonLogger.info('user', user);
     return user.id;
   },
 );

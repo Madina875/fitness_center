@@ -24,6 +24,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { SignInUserDto } from '../user/dto/sign-in-user.dto';
 import { SignInAdminDto } from '../admin/dto/sign-in-admin.dto';
+import { winstonLogger } from '../common/loggger/logger';
 
 @Injectable()
 export class AuthService {
@@ -143,7 +144,7 @@ export class AuthService {
     const role_creating = await this.prismaService.role.create({
       data: { name: role },
     });
-    console.log('role created.');
+    winstonLogger.info('role created.');
     const user_role = await this.prismaService.userRole.create({
       data: { userId: newUser.id, roleId: role_creating.id },
     });
@@ -151,11 +152,11 @@ export class AuthService {
       where: { id: newUser.id },
       data: { role: role_creating.name },
     });
-    console.log(newUser);
+    winstonLogger.info(newUser);
     try {
       await this.mailService.sendUserActivationLink(newUser);
     } catch (error) {
-      console.log(error);
+      winstonLogger.warn(error);
       throw new ServiceUnavailableException('Email error occurred');
     }
     return {
@@ -208,7 +209,7 @@ export class AuthService {
     try {
       await this.mailService.sendAdminActivationLink(newAdmin);
     } catch (error) {
-      console.log(error);
+      winstonLogger.warn(error);
       throw new ServiceUnavailableException('Email error occurred');
     }
 
@@ -278,7 +279,7 @@ export class AuthService {
       throw new NotFoundException('email or password incorrect');
     }
 
-    console.log('admin.is_owner =', admin.is_owner);
+    winstonLogger.info('admin.is_owner =', admin.is_owner);
 
     if (admin.is_owner === true) {
       const payload: JwtPayloadAdmin = {
@@ -288,7 +289,7 @@ export class AuthService {
         is_owner: admin.is_owner,
       };
 
-      console.log(payload);
+      winstonLogger.info(payload);
 
       const [accessToken, refreshToken] = await Promise.all([
         this.jwtService.signAsync(payload, {

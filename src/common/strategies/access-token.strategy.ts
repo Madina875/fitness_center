@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../types';
+import { winstonLogger } from '../loggger/logger';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(
@@ -18,8 +19,8 @@ export class AccessTokenStrategy extends PassportStrategy(
   }
 
   validate(req: Request, payload: JwtPayload): JwtPayload {
-    console.log('request', req);
-    console.log('payload', payload);
+    winstonLogger.info('request', req);
+    winstonLogger.info('payload', payload);
     return payload; //req.user = payload qatori
   }
 }

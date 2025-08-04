@@ -30,7 +30,6 @@ This API empowers you to manage:
 - 🔔 **Notifications** — Send timely updates to users  
 
 ✨ Designed for **scalability**, **security**, and **ease of use** — perfect for gym owners and developers alike.
-
 Explore the endpoints below and unleash the power of fitness management! 🚀
 `,
     )
@@ -50,3 +49,5 @@ Explore the endpoints below and unleash the power of fitness management! 🚀
   });
 }
 bootstrap();
+
+

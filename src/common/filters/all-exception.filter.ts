@@ -4,14 +4,12 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { winstonLogger } from '../loggger/logger';
 
-@Catch() // This catches all exceptions
+@Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionsFilter.name);
-
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -27,8 +25,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Unexpected error occurred';
 
-    // 🟡 LOG the error
-    this.logger.error(
+    // 🟡 Log with winston
+    winstonLogger.error(
       `❗️ ${request.method} ${request.url} -> ${JSON.stringify(message)}`,
     );
 

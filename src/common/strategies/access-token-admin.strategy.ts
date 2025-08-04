@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload, JwtPayloadAdmin } from '../types';
+import { winstonLogger } from '../loggger/logger';
 
 @Injectable()
 export class AccessTokenAdminStrategy extends PassportStrategy(
@@ -18,7 +19,7 @@ export class AccessTokenAdminStrategy extends PassportStrategy(
   }
 
   validate(req: Request, payload: JwtPayloadAdmin): JwtPayloadAdmin {
-    console.log('ADMIN JWT payload', payload);
+    winstonLogger.info('ADMIN JWT payload', payload);
     return payload;
   }
 }
