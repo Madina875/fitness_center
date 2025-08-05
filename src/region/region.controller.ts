@@ -40,7 +40,6 @@ export class RegionController {
     return this.regionService.create(createRegionDto);
   }
 
-  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Get()
   @ApiOperation({ summary: 'Get all regions' })
   @ApiOkResponse({ description: 'List of all regions.' })
