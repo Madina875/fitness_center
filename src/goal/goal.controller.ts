@@ -68,6 +68,7 @@ export class GoalController {
   update(@Param('id') id: string, @Body() updateGoalDto: UpdateGoalDto) {
     return this.goalService.update(+id, updateGoalDto);
   }
+  
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a goal by ID' })

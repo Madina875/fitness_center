@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException
         ? exception.getResponse()
-        : 'Unexpected error occurred';
+        : 'Internal server error occurred';
 
     // 🟡 Log with winston
     winstonLogger.error(
@@ -33,9 +33,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     // 🔵 Respond to client
     response.status(status).json({
       statusCode: status,
+      message,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message,
     });
   }
 }
