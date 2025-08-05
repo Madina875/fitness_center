@@ -20,11 +20,13 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { SelfOrRoleGuard } from '../common/guards/self-role.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('🎭 User Roles')
 @Controller('user-role')
 export class UserRoleController {

@@ -20,9 +20,9 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { SignInUserDto } from '../user/dto/sign-in-user.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { SignInAdminDto } from '../admin/dto/sign-in-admin.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../common/guards/role.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiBearerAuth('access-token')
 @Controller('auth')
@@ -74,6 +74,7 @@ export class AuthController {
 
   //-----------------------------------------ADMIN-------------------------------------------------//
 
+  @UseGuards(AuthGuard, RoleGuard(['superadmin']))
   @Post('admin/signup')
   async signupAdmin(@Body() createAdminDto: CreateAdminDto) {
     return this.authService.signupAdmin(createAdminDto);

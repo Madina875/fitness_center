@@ -20,6 +20,7 @@ import {
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('📝 Reviews')
 @Controller('review')
 export class ReviewController {

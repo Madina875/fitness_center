@@ -20,7 +20,7 @@ export class MailService {
   }
 
   async sendAdminActivationLink(admin: Admin) {
-    const url = `${process.env.api_url}/api/auth/admin/activate/${admin.activation_link}`;
+    const url = `${process.env.api_url}/auth/admin/activate/${admin.activation_link}`;
     await this.mailerService.sendMail({
       to: admin.email,
       subject: 'Welcome to Fitness Cervice! (Admin)',

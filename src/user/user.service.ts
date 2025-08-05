@@ -150,8 +150,8 @@ export class UserService {
     return res.status(200).json({
       message: 'Password successfully changed',
       entered: {
-        current_password,
-        new_password,
+        currentpassword: user.hashedPassword,
+        newpassword: hashed,
       },
     });
   }

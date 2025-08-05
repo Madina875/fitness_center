@@ -20,10 +20,12 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('🔔 Subscriptions')
 @Controller('subscription')
 export class SubscriptionController {
