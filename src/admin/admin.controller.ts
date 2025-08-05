@@ -21,6 +21,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ResetPasswordAdminDto } from './dto/reset-password-admin.dto';
 import { PasswordAdminDto } from './dto/password-admin.dto';
@@ -30,6 +31,7 @@ import { AdminSelfGuard } from '../common/guards/admin-self.guard';
 import { SelfOrRoleGuard } from '../common/guards/self-role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('🧑‍💼 Admins')
 @Controller('admin')
 export class AdminController {

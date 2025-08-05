@@ -20,10 +20,12 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('🎯 Goals')
 @Controller('goal')
 export class GoalController {
@@ -39,6 +41,7 @@ export class GoalController {
     return this.goalService.create(createGoalDto);
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'user']))
   @Get()
   @ApiOperation({ summary: 'Get all goals' })
@@ -68,7 +71,7 @@ export class GoalController {
   update(@Param('id') id: string, @Body() updateGoalDto: UpdateGoalDto) {
     return this.goalService.update(+id, updateGoalDto);
   }
-  
+
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'user']))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a goal by ID' })

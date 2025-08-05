@@ -20,11 +20,13 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AdminSelfGuard } from '../common/guards/admin-self.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('🌍 Regions')
 @Controller('region')
 export class RegionController {

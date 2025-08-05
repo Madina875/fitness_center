@@ -21,6 +21,7 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
@@ -29,6 +30,7 @@ import { SelfOrRoleGuard } from '../common/guards/self-role.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 
+@ApiBearerAuth('access-token')
 @ApiTags('👤 Users')
 @Controller('user')
 export class UserController {

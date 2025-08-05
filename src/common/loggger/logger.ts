@@ -18,7 +18,7 @@ export const winstonLogger = createLogger({
       level: 'error',
       format: winston.format.combine(
         winston.format.label({ label: 'fitness_center' }),
-        // winston.format.json(),
+        winston.format.json(),
         winston.format.timestamp(),
       ),
     }),

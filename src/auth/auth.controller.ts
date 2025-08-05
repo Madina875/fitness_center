@@ -22,7 +22,9 @@ import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { SignInAdminDto } from '../admin/dto/sign-in-admin.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../common/guards/role.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

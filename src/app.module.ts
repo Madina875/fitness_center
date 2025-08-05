@@ -21,6 +21,7 @@ import { GoalModule } from './goal/goal.module';
 import { GoalProgressLogModule } from './goal_progress_log/goal_progress_log.module';
 import { AchievementModule } from './achievement/achievement.module';
 import { AuthModule } from './auth/auth.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AuthModule } from './auth/auth.module';
     AchievementModule,
     AuthModule,
     AppModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

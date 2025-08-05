@@ -19,8 +19,10 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @ApiTags('📈 Goal Progress Logs')
 @Controller('goal-progress-log')
 export class GoalProgressLogController {

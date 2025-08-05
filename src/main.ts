@@ -65,3 +65,5 @@ Explore the endpoints below and unleash the power of fitness management! 🚀
   });
 }
 bootstrap();
+
+// sudo systemctl restart postgresql
