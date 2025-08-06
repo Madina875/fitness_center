@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { CreateImageDto } from './dto/create-image.dto';
@@ -24,6 +26,8 @@ import {
 } from '@nestjs/swagger';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { winstonLogger } from '../common/loggger/logger';
 
 @ApiBearerAuth('access-token')
 @ApiTags('🖼️ Images')
@@ -33,12 +37,21 @@ export class ImageController {
 
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Post()
+  @UseInterceptors(FileInterceptor('url'))
   @ApiOperation({ summary: 'Upload a new image' })
   @ApiBody({ type: CreateImageDto })
   @ApiCreatedResponse({ description: 'Image uploaded successfully.' })
   @ApiBadRequestResponse({ description: 'Invalid image data.' })
-  create(@Body() createImageDto: CreateImageDto) {
-    return this.imageService.create(createImageDto);
+  async create(
+    @Body() createImageDto: any,
+    @UploadedFile() url: Express.Multer.File,
+  ) {
+    const formattedDto = {
+      centerId: parseInt(createImageDto.centerId),
+      is_main: createImageDto.is_main === 'true',
+    };
+
+    return this.imageService.create(formattedDto, url);
   }
 
   @Get()

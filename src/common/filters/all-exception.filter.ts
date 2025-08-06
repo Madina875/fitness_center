@@ -15,22 +15,25 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let status: number;
+    let message: any;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Internal server error occurred';
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      const res = exception.getResponse();
+      message =
+        typeof res === 'string' ? res : (res as any).message || 'Unknown error';
+    } else {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = 'Internal server error occurred';
 
-    // 🟡 Log with winston
+      console.error('🔥 Unhandled exception:', exception);
+    }
+
     winstonLogger.error(
       `❗️ ${request.method} ${request.url} -> ${JSON.stringify(message)}`,
     );
 
-    // 🔵 Respond to client
     response.status(status).json({
       statusCode: status,
       message,

@@ -2,15 +2,34 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class ImageService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly fileService: FilesService,
+  ) {}
 
-  create(createImageDto: CreateImageDto) {
-    return this.prismaService.image.create({
-      data: createImageDto,
-    });
+  async create(createImageDto: CreateImageDto, url: Express.Multer.File) {
+    try {
+      const fileName = await this.fileService.saveFile(url);
+
+      const image = await this.prismaService.image.create({
+        data: {
+          ...createImageDto,
+          url: fileName,
+        },
+      });
+
+      return {
+        ...image,
+        fullUrl: `${process.env.BASE_URL}/uploads/${fileName}`, 
+      };
+    } catch (error) {
+      console.log(error);
+      throw new Error('Image creation failed');
+    }
   }
 
   findAll() {
