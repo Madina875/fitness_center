@@ -19,6 +19,14 @@ export class PaymentService {
     });
   }
 
+  async getUserPayments(userId: number) {
+    return this.prismaService.payment.findMany({
+      where: {
+        clientId: userId,
+      },
+    });
+  }
+
   findOne(id: number) {
     return this.prismaService.payment.findUnique({ where: { id } });
   }

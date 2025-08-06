@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
+  Res,
+  Query,
 } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
@@ -24,12 +27,29 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
+import { RefreshTokenGuard } from '../common/guards';
+import { GetCurrentUserId, GetCurrrentUser } from '../common/decorators';
+import { Response } from 'express';
 
 @ApiBearerAuth('access-token')
 @ApiTags('🔔 Subscriptions')
 @Controller('subscription')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
+
+  @Get('me')
+  @UseGuards(RefreshTokenGuard)
+  getMySubscriptions(
+    @GetCurrentUserId() userId: number,
+    @GetCurrrentUser('refreshToken') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.subscriptionService.getUserSubscriptions(
+      userId,
+      refreshToken,
+      res,
+    );
+  }
 
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Post()

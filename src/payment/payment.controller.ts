@@ -24,12 +24,20 @@ import {
 } from '@nestjs/swagger';
 import { RoleGuard } from '../common/guards/role.guard';
 import { AuthGuard } from '../common/guards/jwt-auth.guard';
+import { RefreshTokenGuard } from '../common/guards';
+import { GetCurrentUserId } from '../common/decorators';
 
 @ApiBearerAuth('access-token')
 @ApiTags('💳 Payments')
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
+
+  @Get('me')
+  @UseGuards(RefreshTokenGuard)
+  getMyPayment(@GetCurrentUserId() userId: number) {
+    return this.paymentService.getUserPayments(userId);
+  }
 
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager', 'admin', 'user']))
   @Post()

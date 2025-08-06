@@ -2,10 +2,30 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Response } from 'express';
 
 @Injectable()
 export class SubscriptionService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getUserSubscriptions(userId: number, refreshToken: any, res: Response) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('user not exists in the db');
+    }
+
+    return this.prismaService.subscription.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        user: true,
+        center: true,
+      },
+    });
+  }
 
   create(createSubscriptionDto: CreateSubscriptionDto) {
     return this.prismaService.subscription.create({

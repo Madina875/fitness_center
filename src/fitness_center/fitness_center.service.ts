@@ -7,6 +7,32 @@ import { PrismaService } from '../prisma/prisma.service';
 export class FitnessCenterService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async getById(centerId: number) {
+    return this.prismaService.equipment.findMany({
+      where: {
+        centerId: centerId,
+      },
+    });
+  }
+  async findByName(name: string) {
+    return this.prismaService.fitnessCenter.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+    });
+  }
+
+  async getByIdImage(centerId: number) {
+    return this.prismaService.image.findMany({
+      where: {
+        centerId: centerId,
+      },
+    });
+  }
+
   create(createFitnessCenterDto: CreateFitnessCenterDto) {
     return this.prismaService.fitnessCenter.create({
       data: createFitnessCenterDto,

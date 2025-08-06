@@ -82,7 +82,6 @@ export function RoleGuard(allowedRoles: string[] | 'all') {
         throw new ForbiddenException('Access denied: admin lacks permission');
       }
 
-      // ✅ Handle user with roles
       const userRoles = Array.isArray(decoded.role)
         ? decoded.role
         : [decoded.role];

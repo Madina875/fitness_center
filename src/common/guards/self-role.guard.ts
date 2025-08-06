@@ -9,7 +9,7 @@ import {
 export function SelfOrRoleGuard(allowedRoles: string[] | 'all') {
   @Injectable()
   class MixinSelfOrRoleGuard implements CanActivate {
-    static ALL_ROLES = ['manager', 'instructor', 'delivery', 'user'];
+    static ALL_ROLES = ['manager', 'instructor', 'user'];
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest();

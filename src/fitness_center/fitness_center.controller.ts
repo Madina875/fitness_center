@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { FitnessCenterService } from './fitness_center.service';
 import { CreateFitnessCenterDto } from './dto/create-fitness_center.dto';
@@ -30,6 +33,23 @@ import { AuthGuard } from '../common/guards/jwt-auth.guard';
 @Controller('fitness-center')
 export class FitnessCenterController {
   constructor(private readonly fitnessCenterService: FitnessCenterService) {}
+
+  @Get('equipments/:id')
+  getCenter(@Param('id', ParseIntPipe) centerId: string) {
+    return this.fitnessCenterService.getById(+centerId);
+  }
+  @Get('search/by-name')
+  searchByName(@Query('name') name: string) {
+    if (!name) {
+      throw new BadRequestException('Name query parameter is required');
+    }
+    return this.fitnessCenterService.findByName(name);
+  }
+
+  @Get('image/:id')
+  getImage(@Param('id', ParseIntPipe) centerId: string) {
+    return this.fitnessCenterService.getByIdImage(+centerId);
+  }
 
   @UseGuards(AuthGuard, RoleGuard(['superadmin', 'manager']))
   @Post()
